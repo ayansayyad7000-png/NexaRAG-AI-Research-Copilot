@@ -6,32 +6,32 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-111111?style=for-the-badge)
-![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST_API-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-Web_UI-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![RAG](https://img.shields.io/badge/RAG-Semantic_Search-7C3AED?style=for-the-badge)
 
-**Upload PDFs, DOCX, TXT or Markdown → ask questions → get grounded answers with sources.**
+**Upload PDF, DOCX, TXT or Markdown files → ask questions → get answers grounded in your documents with source citations.**
 
 </div>
 
 ---
 
-## 🚀 Why this project is strong
+## 🚀 What this project does
 
-NexaRAG is not a basic chatbot. It builds a searchable knowledge base from your own documents and uses a local LLM to answer only from retrieved evidence.
+NexaRAG is a local Retrieval-Augmented Generation system. It converts your documents into embeddings, finds the most relevant information for a question, and gives that evidence to a local LLM before generating the answer.
 
-### Main features
+### Features
 
-- 📄 Upload **PDF, DOCX, TXT and Markdown**
-- 🧩 Automatic document chunking
-- 🔢 Local embeddings through **Ollama**
-- 🔎 Semantic vector search using NumPy
+- 📄 PDF, DOCX, TXT and Markdown ingestion
+- 🧩 Overlapping document chunking
+- 🔢 Local embeddings using Ollama
+- 🔎 Cosine-similarity semantic search
 - 🧠 Local LLM generation
-- 📚 Source-grounded answers with citation numbers
-- 💬 Streamlit chat interface
+- 📚 Source-grounded answers with citations
+- 💬 Streamlit chat application
 - ⚡ FastAPI REST API
 - 💾 Persistent local vector index
-- 🔐 No paid AI API key required
+- 🔐 No paid AI API key required by default
 - 🐳 Docker support
 - ✅ GitHub Actions CI
 - 🧪 Unit tests
@@ -42,30 +42,87 @@ NexaRAG is not a basic chatbot. It builds a searchable knowledge base from your 
 
 ```mermaid
 flowchart LR
-    A[Documents<br/>PDF DOCX TXT MD] --> B[Document Loader]
+    A[PDF / DOCX / TXT / MD] --> B[Document Loader]
     B --> C[Chunking]
     C --> D[Ollama Embeddings]
     D --> E[(Local Vector Store)]
-    Q[User Question] --> F[Query Embedding]
+    Q[User Question] --> F[Question Embedding]
     F --> E
     E --> G[Top Relevant Chunks]
-    G --> H[Prompt Builder]
+    G --> H[RAG Engine]
     H --> I[Local Ollama LLM]
     I --> J[Answer + Citations]
 ```
 
 ---
 
+## 📁 Professional Project Structure
+
+```text
+NexaRAG-AI-Research-Copilot/
+│
+├── apps/
+│   ├── streamlit_app.py          # Streamlit web interface
+│   └── api.py                    # FastAPI REST API
+│
+├── nexarag/                      # Core AI package
+│   ├── __init__.py
+│   ├── config.py                 # Application settings
+│   │
+│   ├── ingestion/
+│   │   ├── __init__.py
+│   │   ├── chunker.py            # Text chunking
+│   │   └── document_loader.py    # PDF/DOCX/TXT/MD loading
+│   │
+│   ├── llm/
+│   │   ├── __init__.py
+│   │   └── ollama_client.py      # Chat + embedding requests
+│   │
+│   ├── retrieval/
+│   │   ├── __init__.py
+│   │   └── vector_store.py       # Vector storage and search
+│   │
+│   └── rag/
+│       ├── __init__.py
+│       └── engine.py             # Complete RAG pipeline
+│
+├── config/
+│   └── .env.example             # Environment variable template
+│
+├── deploy/
+│   ├── Dockerfile
+│   └── docker-compose.yml
+│
+├── examples/
+│   └── ai_notes.md              # Sample knowledge document
+│
+├── tests/
+│   └── test_chunker.py
+│
+├── data/                         # Local vector index data
+├── .github/workflows/
+│   └── ci.yml                   # Automated testing
+│
+├── requirements.txt
+├── .gitignore
+├── LICENSE
+└── README.md
+```
+
+This layout keeps the **UI**, **API**, **AI engine**, **retrieval layer**, **deployment**, **configuration**, and **tests** separate so the project can scale cleanly.
+
+---
+
 ## 🧰 Tech Stack
 
-| Layer | Technology |
+| Part | Technology |
 |---|---|
 | Language | Python |
-| UI | Streamlit |
-| API | FastAPI |
-| LLM runtime | Ollama |
+| Web UI | Streamlit |
+| REST API | FastAPI |
+| Local AI runtime | Ollama |
 | Chat model | `qwen3:4b` by default |
-| Embeddings | `embeddinggemma` by default |
+| Embedding model | `embeddinggemma` by default |
 | Retrieval | Cosine similarity |
 | Vector storage | NumPy + JSON |
 | PDF parsing | pypdf |
@@ -76,101 +133,16 @@ flowchart LR
 
 ---
 
-## 📁 Project Structure
+# ⚙️ Installation
 
-```text
-NexaRAG-AI-Research-Copilot/
-├── app.py
-├── api.py
-├── requirements.txt
-├── .env.example
-├── .gitignore
-├── Dockerfile
-├── docker-compose.yml
-├── LICENSE
-├── src/
-│   ├── __init__.py
-│   ├── chunker.py
-│   ├── config.py
-│   ├── document_loader.py
-│   ├── ollama_client.py
-│   ├── rag.py
-│   └── vector_store.py
-├── tests/
-│   └── test_chunker.py
-├── sample_docs/
-│   └── ai_notes.md
-└── .github/
-    └── workflows/
-        └── ci.yml
-```
-
----
-
-# ⚙️ Setup
-
-## 1. Install Python
-
-Use Python 3.11 or newer.
-
-Check:
-
-```bash
-python --version
-```
-
-On Ubuntu:
-
-```bash
-python3 --version
-```
-
----
-
-## 2. Install Ollama
-
-Install Ollama from its official website.
-
-After installation, check:
-
-```bash
-ollama --version
-```
-
----
-
-## 3. Download the AI models
-
-Chat model:
-
-```bash
-ollama pull qwen3:4b
-```
-
-Embedding model:
-
-```bash
-ollama pull embeddinggemma
-```
-
-Test the chat model:
-
-```bash
-ollama run qwen3:4b
-```
-
----
-
-## 4. Clone this repository
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/ayansayyad7000-png/NexaRAG-AI-Research-Copilot.git
 cd NexaRAG-AI-Research-Copilot
 ```
 
----
-
-## 5. Create a virtual environment
+## 2. Create a virtual environment
 
 ### Windows
 
@@ -179,35 +151,46 @@ python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### Ubuntu/Linux
+### Ubuntu / Linux
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
----
-
-## 6. Install packages
+## 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
+## 4. Install and start Ollama
 
-## 7. Create environment file
-
-Windows:
-
-```powershell
-copy .env.example .env
-```
-
-Linux:
+Check Ollama:
 
 ```bash
-cp .env.example .env
+ollama --version
+```
+
+Download the models:
+
+```bash
+ollama pull qwen3:4b
+ollama pull embeddinggemma
+```
+
+## 5. Create environment configuration
+
+### Windows
+
+```powershell
+copy config\.env.example .env
+```
+
+### Linux
+
+```bash
+cp config/.env.example .env
 ```
 
 Default configuration:
@@ -219,126 +202,173 @@ EMBED_MODEL=embeddinggemma
 TOP_K=5
 CHUNK_SIZE=180
 CHUNK_OVERLAP=35
+DATA_DIR=data
 ```
 
 ---
 
-# 🖥️ Run the Streamlit App
+# 🖥️ Run the Streamlit application
+
+From the repository root:
 
 ```bash
-streamlit run app.py
+streamlit run apps/streamlit_app.py
 ```
 
-Open `http://localhost:8501`.
+Open:
 
-### How to use
+```text
+http://localhost:8501
+```
 
-1. Upload one or more documents.
+Then:
+
+1. Upload documents.
 2. Click **Build Knowledge Base**.
-3. Wait until indexing finishes.
-4. Ask a question.
-5. Read the answer.
-6. Expand **Sources** to inspect the retrieved evidence.
+3. Ask a question.
+4. Read the generated answer.
+5. Expand **Sources** to inspect the evidence.
 
 ---
 
-# ⚡ Run the FastAPI Backend
+# ⚡ Run the FastAPI backend
 
 ```bash
-uvicorn api:app --reload
+uvicorn apps.api:app --reload
 ```
 
-Open API docs at `http://127.0.0.1:8000/docs`.
+API documentation:
 
-## API Health Check
+```text
+http://127.0.0.1:8000/docs
+```
+
+Health check:
 
 ```bash
 curl http://127.0.0.1:8000/health
-```
-
-## Ask a Question Through API
-
-```bash
-curl -X POST http://127.0.0.1:8000/ask \
-  -H "Content-Type: application/json" \
-  -d "{\"question\":\"What are the main ideas in my documents?\"}"
 ```
 
 ---
 
 # 🐳 Docker
 
-```bash
-docker compose up --build
-```
-
-Ollama must already be running on your host computer.
-
----
-
-# 🧠 How RAG Works Here
-
-1. **Load documents** — reads PDF, DOCX, TXT and Markdown.
-2. **Chunk text** — divides long content into overlapping sections.
-3. **Create embeddings** — converts chunks into numeric vectors.
-4. **Store vectors** — saves vectors and metadata locally.
-5. **Search** — embeds the user's question.
-6. **Retrieve** — cosine similarity finds the best evidence.
-7. **Generate** — sends only retrieved context to the local LLM.
-8. **Cite** — answer references evidence with `[1]`, `[2]`, etc.
-
----
-
-# 🔐 Privacy
-
-The default design uses local Ollama models. Documents and the vector index remain on your machine unless you separately upload or sync them elsewhere.
-
----
-
-# 🧪 Run Tests
+Build the image:
 
 ```bash
-pytest -q
+docker build -f deploy/Dockerfile -t nexarag .
+```
+
+Or start with Docker Compose:
+
+```bash
+docker compose -f deploy/docker-compose.yml up --build
+```
+
+Ollama should already be running on the host computer.
+
+---
+
+## 🧠 RAG Pipeline
+
+```text
+Document
+   ↓
+Document Loader
+   ↓
+Chunker
+   ↓
+Embedding Model
+   ↓
+Local Vector Store
+   ↓
+Semantic Retrieval
+   ↓
+Relevant Context
+   ↓
+Local LLM
+   ↓
+Grounded Answer + Citations
+```
+
+The LLM is instructed to answer only from retrieved context and to say when the indexed documents do not contain enough information.
+
+---
+
+## 🧪 Tests
+
+Run:
+
+```bash
+python -m pytest -q
+```
+
+The repository includes tests for chunk creation, overlap behavior, and invalid chunk configuration.
+
+---
+
+## ✅ Continuous Integration
+
+GitHub Actions runs automatically on pushes and pull requests to `main`.
+
+```text
+Checkout
+   ↓
+Install Python
+   ↓
+Install dependencies
+   ↓
+Compile Python files
+   ↓
+Run pytest
+```
+
+Workflow file:
+
+```text
+.github/workflows/ci.yml
 ```
 
 ---
 
-# ✅ GitHub Actions
+## 🔐 Privacy
 
-Every push performs a Python syntax check and runs the unit tests through `.github/workflows/ci.yml`.
+The default architecture uses local Ollama models. The application does not require sending your documents to a paid cloud LLM API.
 
----
-
-# 💡 Interview Explanation
-
-> I built a local Retrieval-Augmented Generation system. It ingests documents, splits them into semantic chunks, creates embeddings through Ollama, stores the vectors locally, retrieves the most relevant context using cosine similarity, and sends only that evidence to a local LLM. I exposed it through both Streamlit and FastAPI and added source citations, persistence, Docker support, tests and CI.
+Local index files are stored under `data/` and are excluded from normal Git commits.
 
 ---
 
-# 🔥 Future Improvements
+## 💡 Interview Explanation
 
-- Hybrid BM25 + vector search
+> I built a modular local Retrieval-Augmented Generation system. The ingestion layer loads and chunks documents, Ollama creates embeddings, a local vector store retrieves the most relevant chunks using cosine similarity, and the RAG engine sends only that evidence to a local LLM. I exposed the system through Streamlit and FastAPI, added source citations, persistent storage, Docker deployment, tests, and GitHub Actions CI.
+
+---
+
+## 🔥 Future Improvements
+
+- Hybrid BM25 + vector retrieval
 - Cross-encoder reranking
-- Web search agent
-- Conversation memory
 - OCR for scanned PDFs
-- Image understanding
-- PostgreSQL/pgvector
-- Redis cache
+- Multimodal document understanding
+- Conversation memory
+- Agentic web research
+- PostgreSQL + pgvector
+- Redis caching
+- Authentication
 - AWS deployment
-- Agentic research workflow
 - RAG evaluation metrics
 
 ---
 
-# 👨‍💻 Author
+<div align="center">
+
+## 👨‍💻 Author
 
 **Ayan Sayyad**  
 B.Tech Information Technology  
 Cloud • DevOps • Python • Linux • AI Engineering
 
-<div align="center">
-
-### Build systems that can explain where their answers came from.
+### Build AI systems that can explain where their answers came from.
 
 </div>
