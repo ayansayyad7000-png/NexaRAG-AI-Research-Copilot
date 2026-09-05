@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import requests
 
-from .config import settings
+from ..config import settings
 
 
 class OllamaError(RuntimeError):
@@ -28,7 +28,10 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
     try:
         response = requests.post(
             _url("/api/embed"),
-            json={"model": settings.embed_model, "input": texts},
+            json={
+                "model": settings.embed_model,
+                "input": texts,
+            },
             timeout=180,
         )
         response.raise_for_status()
@@ -56,7 +59,9 @@ def chat(system_prompt: str, user_prompt: str) -> str:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
                 ],
-                "options": {"temperature": 0.2},
+                "options": {
+                    "temperature": 0.2,
+                },
             },
             timeout=240,
         )

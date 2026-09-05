@@ -6,8 +6,8 @@ from pathlib import Path
 
 import numpy as np
 
-from .chunker import Chunk
-from .config import settings
+from ..ingestion.chunker import Chunk
+from ..config import settings
 
 
 class LocalVectorStore:
@@ -72,13 +72,17 @@ class LocalVectorStore:
         self.chunks.extend(chunks)
         self.save()
 
-    def search(self, query_embedding: list[float], top_k: int = 5) -> list[tuple[Chunk, float]]:
+    def search(
+        self, query_embedding: list[float], top_k: int = 5
+    ) -> list[tuple[Chunk, float]]:
         if self.embeddings is None or not self.chunks:
             return []
 
         query = np.asarray(query_embedding, dtype=np.float32)
         query = self._normalize(query)[0]
+
         scores = self.embeddings @ query
         k = min(top_k, len(scores))
         top_indices = np.argsort(scores)[::-1][:k]
+
         return [(self.chunks[i], float(scores[i])) for i in top_indices]

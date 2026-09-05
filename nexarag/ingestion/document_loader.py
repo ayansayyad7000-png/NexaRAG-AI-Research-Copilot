@@ -4,7 +4,7 @@ from docx import Document
 from pypdf import PdfReader
 
 from .chunker import Chunk, chunk_pages
-from .config import settings
+from ..config import settings
 
 
 SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt", ".md"}
