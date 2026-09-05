@@ -1,0 +1,17 @@
+services:
+  nexarag:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      CHAT_MODEL: qwen3:4b
+      EMBED_MODEL: embeddinggemma
+      TOP_K: 5
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - nexarag_data:/app/data
+
+volumes:
+  nexarag_data:
