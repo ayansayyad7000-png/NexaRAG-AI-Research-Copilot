@@ -363,6 +363,24 @@ Local index files are stored under `data/` and are excluded from normal Git comm
 
 <div align="center">
 
+## ☁️ Vercel Cloud Demo
+
+The repository now includes a **secure, static Vercel portfolio demo** in `index.html`.
+
+- Interactive NexaRAG research-agent demo
+- Citation/source chips
+- Responsive professional UI
+- No API keys or browser secrets
+- Hardened security headers in `vercel.json`
+- Security guidance in `SECURITY.md`
+- Original local Ollama RAG implementation remains unchanged
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fayansayyad7000-png%2FNexaRAG-AI-Research-Copilot&project-name=nexarag-ai-research-copilot&repository-name=NexaRAG-AI-Research-Copilot)
+
+> The Vercel demo is intentionally static and secret-free. Run the Python/Ollama stack locally for the full RAG runtime.
+
+---
+
 ## 👨‍💻 Author
 
 **Ayan Sayyad**  
