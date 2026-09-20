@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="NexaRAG AI Research Copilot — secure, citation-grounded RAG research agent demo by Ayan Sayyad." />
+  <meta name="theme-color" content="#090b10" />
+  <title>NexaRAG — AI Research Copilot</title>
+  <style>
+    :root{
+      --bg:#080a0f;--panel:#0f1219;--panel2:#141924;--line:#252b38;
+      --text:#f4f7fb;--muted:#9aa6b5;--accent:#8b5cf6;--accent2:#22d3ee;
+      --ok:#34d399;--shadow:0 20px 70px rgba(0,0,0,.42)
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:
+      radial-gradient(900px 600px at 15% -10%,rgba(139,92,246,.14),transparent 55%),
+      radial-gradient(800px 500px at 95% 10%,rgba(34,211,238,.10),transparent 50%),
+      var(--bg);color:var(--text);font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:inherit;text-decoration:none}.shell{max-width:1180px;margin:auto;padding:0 22px}
+    nav{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06)}
+    .brand{display:flex;gap:12px;align-items:center;font-weight:800;letter-spacing:-.02em}
+    .logo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 30px rgba(139,92,246,.25)}
+    .navlinks{display:flex;gap:20px;color:var(--muted);font-size:14px}.navlinks a:hover{color:var(--text)}
+    .hero{padding:76px 0 48px;display:grid;grid-template-columns:1.05fr .95fr;gap:42px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;color:#cbd5e1;background:rgba(255,255,255,.025);font-size:12px}
+    .dot{width:7px;height:7px;border-radius:99px;background:var(--ok);box-shadow:0 0 15px rgba(52,211,153,.8)}
+    h1{font-size:clamp(42px,6vw,76px);line-height:.98;letter-spacing:-.055em;margin:20px 0 20px}
+    .gradient{background:linear-gradient(100deg,#fff 15%,#c4b5fd 48%,#67e8f9 85%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{max-width:680px;color:var(--muted);font-size:18px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+    .btn{padding:11px 16px;border-radius:10px;border:1px solid var(--line);background:#151923;color:#fff;font-weight:700;cursor:pointer;transition:.18s ease}
+    .btn:hover{transform:translateY(-1px);border-color:#3d4659}.btn.primary{border:0;background:linear-gradient(135deg,var(--accent),#6d5dfc)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:30px;max-width:570px}
+    .stat{padding:14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.018)}
+    .stat b{display:block;font-size:16px}.stat span{color:var(--muted);font-size:12px}
+    .agent{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));box-shadow:var(--shadow);overflow:hidden}
+    .agent-head{padding:15px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+    .agent-title{display:flex;align-items:center;gap:10px}.orb{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#7c3aed,#22d3ee);display:grid;place-items:center;font-weight:900}
+    .status{font-size:11px;color:#86efac;border:1px solid rgba(52,211,153,.25);padding:4px 8px;border-radius:999px;background:rgba(52,211,153,.06)}
+    .chat{height:440px;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+    .msg{max-width:88%;padding:11px 13px;border-radius:13px;border:1px solid var(--line);white-space:pre-wrap}
+    .msg.bot{align-self:flex-start;background:#111621}.msg.user{align-self:flex-end;background:#1b1830;border-color:#3b2f67}
+    .meta{font-size:11px;color:var(--muted);margin-bottom:4px}.sources{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+    .src{font-size:10px;padding:3px 7px;border:1px solid #314055;border-radius:999px;color:#b9c5d6;background:#0b1119}
+    .composer{padding:13px;border-top:1px solid var(--line);display:flex;gap:9px;background:#0d1017}
+    .composer input{flex:1;min-width:0;border:1px solid var(--line);background:#0b0e14;color:#fff;border-radius:10px;padding:11px 12px;outline:none}
+    .composer input:focus{border-color:#6658a9}.send{width:44px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#081018;font-weight:900;cursor:pointer}
+    .quick{padding:0 13px 13px;display:flex;gap:7px;flex-wrap:wrap;background:#0d1017}
+    .chip{font-size:11px;color:#c9d3df;padding:6px 8px;border:1px solid var(--line);border-radius:999px;background:#11151d;cursor:pointer}
+    .section{padding:54px 0}.section h2{font-size:32px;letter-spacing:-.035em;margin:0 0 12px}.sub{color:var(--muted);max-width:740px;margin-bottom:24px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{border:1px solid var(--line);border-radius:14px;padding:18px;background:rgba(255,255,255,.018)}
+    .card h3{margin:8px 0 8px;font-size:16px}.card p{margin:0;color:var(--muted);font-size:13px}.icon{font-size:22px}
+    .arch{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;align-items:center}.node{padding:13px;text-align:center;border:1px solid var(--line);border-radius:11px;background:#0d1119;font-size:12px;color:#d9e2ec}.arrow{text-align:center;color:#5f6b7a}
+    .security{display:grid;grid-template-columns:1fr 1fr;gap:14px}.security .card{min-height:150px}
+    footer{padding:36px 0 50px;border-top:1px solid rgba(255,255,255,.06);color:var(--muted);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .tiny{font-size:12px}.kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#c4b5fd}
+    @media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:48px}.grid{grid-template-columns:1fr 1fr}.arch{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
+    @media(max-width:620px){.navlinks{display:none}.stats,.grid,.security{grid-template-columns:1fr}.chat{height:390px}h1{font-size:46px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav>
+      <a class="brand" href="#"><span class="logo">N</span><span>NexaRAG</span></a>
+      <div class="navlinks"><a href="#agent">Agent</a><a href="#features">Features</a><a href="#architecture">Architecture</a><a href="#security">Security</a></div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div>
+          <span class="eyebrow"><span class="dot"></span> Cloud demo • source-grounded research workflow</span>
+          <h1><span class="gradient">AI Research Copilot</span><br/>built for evidence.</h1>
+          <p class="lead">NexaRAG is a Retrieval-Augmented Generation project that turns documents into searchable context, retrieves relevant evidence, and produces citation-grounded answers. This Vercel demo showcases the interaction model without exposing secrets or requiring a paid API key.</p>
+          <div class="actions">
+            <a class="btn primary" href="#agent">Try the demo agent</a>
+            <a class="btn" href="https://github.com/ayansayyad7000-png/NexaRAG-AI-Research-Copilot" target="_blank" rel="noopener noreferrer">View source ↗</a>
+          </div>
+          <div class="stats">
+            <div class="stat"><b>4 formats</b><span>PDF • DOCX • TXT • MD</span></div>
+            <div class="stat"><b>Local-first</b><span>Ollama-powered core</span></div>
+            <div class="stat"><b>Citations</b><span>Evidence before answers</span></div>
+          </div>
+        </div>
+
+        <section class="agent" id="agent" aria-label="NexaRAG demo agent">
+          <div class="agent-head">
+            <div class="agent-title"><span class="orb">✦</span><div><b>NexaRAG Agent</b><div class="tiny" style="color:var(--muted)">Offline portfolio demo</div></div></div>
+            <span class="status">● READY</span>
+          </div>
+          <div class="chat" id="chat" aria-live="polite">
+            <div class="msg bot">
+              <div class="meta">NexaRAG • demo mode</div>
+              Ask me about the architecture, supported documents, privacy model, retrieval flow, or the difference between RAG and a normal chatbot.
+              <div class="sources"><span class="src">README.md</span><span class="src">apps/api.py</span><span class="src">nexarag/</span></div>
+            </div>
+          </div>
+          <div class="quick">
+            <button class="chip" data-q="How does NexaRAG work?">How it works</button>
+            <button class="chip" data-q="Why is it privacy friendly?">Privacy</button>
+            <button class="chip" data-q="What files are supported?">File support</button>
+            <button class="chip" data-q="What makes RAG useful?">RAG value</button>
+          </div>
+          <form class="composer" id="composer" autocomplete="off">
+            <input id="prompt" maxlength="240" placeholder="Ask about NexaRAG…" aria-label="Ask the NexaRAG demo agent" />
+            <button class="send" type="submit" aria-label="Send">➜</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="section" id="features">
+        <h2>Designed like a real AI system.</h2>
+        <p class="sub">The repository separates ingestion, retrieval, generation, UI, API and deployment concerns so the project can evolve without becoming a single-file prototype.</p>
+        <div class="grid">
+          <article class="card"><div class="icon">📄</div><h3>Document ingestion</h3><p>Loads PDF, DOCX, TXT and Markdown into a normalized text pipeline.</p></article>
+          <article class="card"><div class="icon">🧩</div><h3>Chunking pipeline</h3><p>Splits long content into overlapping chunks so useful context survives retrieval.</p></article>
+          <article class="card"><div class="icon">🔎</div><h3>Semantic retrieval</h3><p>Ranks document chunks by similarity so answers are grounded in relevant evidence.</p></article>
+          <article class="card"><div class="icon">🧠</div><h3>Local LLM core</h3><p>The full local build uses Ollama for embeddings and generation without a paid cloud key.</p></article>
+          <article class="card"><div class="icon">📚</div><h3>Citation-first answers</h3><p>Responses are designed to include the source context used to support the answer.</p></article>
+          <article class="card"><div class="icon">⚙️</div><h3>API + UI separation</h3><p>FastAPI and Streamlit sit above a reusable core RAG package and testable modules.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="architecture">
+        <h2>Retrieval flow</h2>
+        <p class="sub">A simple architecture with clear boundaries between documents, embeddings, retrieval and generation.</p>
+        <div class="arch">
+          <div class="node">Documents<br><span class="tiny">PDF / DOCX / TXT / MD</span></div><div class="arrow">→</div>
+          <div class="node">Chunk + Embed<br><span class="tiny">local pipeline</span></div><div class="arrow">→</div>
+          <div class="node">Vector Search<br><span class="tiny">top relevant chunks</span></div>
+        </div>
+        <div class="arch" style="margin-top:9px">
+          <div class="node">Question<br><span class="tiny">user intent</span></div><div class="arrow">→</div>
+          <div class="node">RAG Engine<br><span class="tiny">context assembly</span></div><div class="arrow">→</div>
+          <div class="node">Answer + Sources<br><span class="tiny">grounded output</span></div>
+        </div>
+      </section>
+
+      <section class="section" id="security">
+        <h2>Security-first deployment surface</h2>
+        <p class="sub">The Vercel-facing demo is intentionally static and secret-free. The full local RAG runtime remains separate, reducing cloud attack surface while keeping the portfolio experience live.</p>
+        <div class="security">
+          <article class="card"><div class="icon">🛡️</div><h3>Hardened browser policy</h3><p>Security headers restrict framing, content types, referrers, browser permissions and cross-origin behavior.</p></article>
+          <article class="card"><div class="icon">🔐</div><h3>No browser secrets</h3><p>No API keys, tokens or credentials are embedded in the demo. User input is processed locally in the page and is not transmitted.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div><b style="color:var(--text)">NexaRAG AI Research Copilot</b><div class="tiny">Portfolio cloud demo • Original local RAG project preserved</div></div>
+      <div class="tiny">Built by <span class="kbd">Ayan Sayyad</span> • Python • FastAPI • Streamlit • RAG • Vercel</div>
+    </footer>
+  </div>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const form = document.getElementById('composer');
+    const input = document.getElementById('prompt');
+
+    const kb = [
+      {keys:['work','architecture','flow','how'], text:'NexaRAG follows a RAG pipeline: documents are loaded, split into overlapping chunks, converted to embeddings, searched for the most relevant context, and then passed to the generation layer so the final answer can be grounded in retrieved evidence.', sources:['README.md','nexarag/rag/engine.py']},
+      {keys:['privacy','private','security','local'], text:'The full project is local-first. Ollama can provide both embeddings and generation on the user’s machine, which means the default architecture does not require sending documents to a paid external AI API. This Vercel demo is also secret-free and does not transmit your prompt.', sources:['README.md','nexarag/llm/ollama_client.py']},
+      {keys:['file','pdf','docx','txt','markdown','support'], text:'The ingestion layer supports PDF, DOCX, TXT and Markdown files. Uploaded content is normalized before chunking and retrieval.', sources:['README.md','nexarag/ingestion/document_loader.py']},
+      {keys:['rag','useful','benefit','chatbot'], text:'RAG is useful when answers should depend on a specific knowledge base instead of only a model’s general training. It retrieves relevant source text first, giving the generation step evidence it can cite and reducing unsupported answers.', sources:['README.md','nexarag/retrieval/vector_store.py']},
+      {keys:['api','fastapi','endpoint'], text:'The project includes a FastAPI service with routes for health checks, document ingestion, asking questions and clearing the knowledge base. The local API and Streamlit UI both use the reusable NexaRAG core.', sources:['apps/api.py','apps/streamlit_app.py']},
+      {keys:['vector','search','similarity','embedding'], text:'NexaRAG uses embeddings plus cosine-similarity retrieval to rank chunks and select the context most relevant to a question.', sources:['README.md','nexarag/retrieval/vector_store.py']}
+    ];
+
+    function addMessage(role, text, sources=[]) {
+      const box = document.createElement('div');
+      box.className = 'msg ' + role;
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = role === 'user' ? 'You' : 'NexaRAG • retrieved answer';
+      const body = document.createElement('div');
+      body.textContent = text;
+      box.append(meta, body);
+      if (sources.length) {
+        const wrap = document.createElement('div');
+        wrap.className = 'sources';
+        sources.forEach(s => {
+          const chip = document.createElement('span');
+          chip.className = 'src';
+          chip.textContent = s;
+          wrap.appendChild(chip);
+        });
+        box.appendChild(wrap);
+      }
+      chat.appendChild(box);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function answer(q) {
+      const clean = q.toLowerCase();
+      let best = null, score = -1;
+      for (const item of kb) {
+        const current = item.keys.reduce((n,k)=>n + (clean.includes(k) ? 1 : 0), 0);
+        if (current > score) { score = current; best = item; }
+      }
+      if (!best || score === 0) {
+        return {text:'This cloud demo only answers questions about the NexaRAG project. Try asking about its architecture, RAG workflow, privacy, supported files, API, embeddings or retrieval.', sources:['README.md']};
+      }
+      return best;
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) return;
+      addMessage('user', q);
+      input.value = '';
+      setTimeout(() => {
+        const r = answer(q);
+        addMessage('bot', r.text, r.sources);
+      }, 260);
+    });
+
+    document.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        input.value = btn.dataset.q || '';
+        form.requestSubmit();
+      });
+    });
+  </script>
+</body>
+</html>
